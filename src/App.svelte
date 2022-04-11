@@ -1,13 +1,16 @@
 <script>
   import Modal from "./Modal.svelte";
 
-  let todos = [];
+  let todosFormula = [];
+  let todosMistura = [];
   let formulaItem = []; // contém os itens da fórmula
   let formulaQuant = []; // contém as quantidades dos itens da fórmula
   let misturaItem = []; // contém os itens da mistura
   let misturaQuant = []; // contém as quantidades da mistura
   let misturaClasse = [];
   let formulaClasse = [];
+  let totalFormula;
+  let totalMistura;
 
   let formulaModalOpen = false;
   let misturaModalOpen = false;
@@ -19,20 +22,35 @@
   $: console.log(misturaQuant);
   $: console.log(misturaClasse);
   $: console.log(formulaClasse);
+  $: console.log(_.sum(formulaQuant));
+  $: console.log(_.sum(misturaQuant));
 
-  function add() {
-    todos = [...todos, ""];
+  function addFormula() {
+    todosFormula = [...todosFormula, ""];
   }
 
-  function selfRemove(index) {
-    todos = [...todos.slice(0, index), ...todos.slice(index + 1)];
+  function addMistura() {
+    todosMistura = [...todosMistura, ""];
+  }
+
+  function selfRemoveFormula(index) {
+    todosFormula = [
+      ...todosFormula.slice(0, index),
+      ...todosFormula.slice(index + 1),
+    ];
+  }
+
+  function selfRemoveMistura(index) {
+    todosMistura = [
+      ...todosMistura.slice(0, index),
+      ...todosMistura.slice(index + 1),
+    ];
   }
 
   // Formula pdf generator function
   function createFormulaPDF() {
     let ingredientesFormula = _.zip(formulaItem, formulaQuant, formulaClasse);
-
-    console.log(ingredientesMistura);
+    totalFormula = _.sum(formulaQuant);
 
     let formulaArray = [
       [
@@ -49,20 +67,16 @@
         { text: "Quantidade(kg)", fillColor: "#999", alignment: "center" },
       ],
     ];
-    console.log(ingredientesFormula);
 
     ingredientesFormula.forEach((d) => {
       return formulaArray.push([d[0], { text: d[1], alignment: "center" }]);
     });
 
     console.log(formulaArray);
-    formulaArray.push(
-      [
-        { text: "PRÉ-MISTURA ALOJ", color: "red" },
-        { text: "25", color: "red", alignment: "center" },
-      ],
-      [{ text: "Total" }, { text: "2000", alignment: "center" }]
-    );
+    formulaArray.push([
+      { text: "Total" },
+      { text: totalFormula, alignment: "center" },
+    ]);
 
     let docDefinition = {
       content: [
@@ -91,6 +105,7 @@
   //Mistura pdf generator function
   function createMisturaPDF() {
     let ingredientesMistura = _.zip(misturaItem, misturaQuant, misturaClasse);
+    let totalMistura = _.sum(misturaQuant);
 
     console.log(ingredientesMistura);
 
@@ -117,7 +132,10 @@
       ]);
     });
 
-    console.log(misturaArray);
+    misturaArray.push([
+      { text: "Total" },
+      { text: totalMistura, alignment: "center" },
+    ]);
 
     let docDefinition = {
       content: [
@@ -158,7 +176,7 @@
     onClosed={() => (formulaModalOpen = false)}
     title="Fórmula"
   >
-    {#each todos as todo, index}
+    {#each todosFormula as todo, index}
       <div class="form-line">
         <input
           type="text"
@@ -176,7 +194,10 @@
           <option value="white">Macronutriente</option>
           <option value="yellow">Mistura</option>
         </select>
-        <button class="btn btn-danger" on:click={() => selfRemove(index)}>
+        <button
+          class="btn btn-danger"
+          on:click={() => selfRemoveFormula(index)}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="16"
@@ -213,7 +234,8 @@
     {/each}
     <div>
       <br />
-      <button class="btn btn-warning" on:click={add}>
+      <button class="btn btn-warning" on:click={addFormula}>
+        <!-- ADD BUTTON -->
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="16"
@@ -236,7 +258,7 @@
     open={misturaModalOpen}
     onClosed={() => (misturaModalOpen = false)}
     title="Mistura"
-    >{#each todos as todo, index}
+    >{#each todosMistura as todo, index}
       <div class="form-line">
         <input
           type="text"
@@ -254,7 +276,10 @@
           <option value="white">Macronutriente</option>
           <option value="yellow">Mistura</option>
         </select>
-        <button class="btn btn-danger" on:click={() => selfRemove(index)}>
+        <button
+          class="btn btn-danger"
+          on:click={() => selfRemoveMistura(index)}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="16"
@@ -291,7 +316,7 @@
     {/each}
     <div>
       <br />
-      <button class="btn btn-warning" on:click={add}>
+      <button class="btn btn-warning" on:click={addMistura}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="16"

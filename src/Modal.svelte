@@ -25,7 +25,12 @@
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="sampleModalLabel">{title}</h5>
+          <h5 class="modal-title" id="sampleModalLabel">
+            {title}<span class="post-title">
+              &nbsp; &nbsp; / &nbsp; Clique em &nbsp; "+" &nbsp; para adicionar
+              item
+            </span>
+          </h5>
           <button
             type="button"
             class="close btn btn-dark"
@@ -70,5 +75,9 @@
   .modal-footer {
     background-color: #212529;
     color: whitesmoke;
+  }
+  .post-title {
+    font-style: italic;
+    font-size: medium;
   }
 </style>
