@@ -44,7 +44,9 @@
             data-dismiss="modal"
             on:click={modalClose}>Cancelar</button
           >
-          <button type="button" class="btn btn-primary">Salvar</button>
+          <button type="button" class="btn btn-primary" on:click={modalClose}
+            >Salvar</button
+          >
         </div>
       </div>
     </div>
